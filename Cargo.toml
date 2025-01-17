@@ -44,6 +44,7 @@ members = [
     "tunnel-obfuscation",
     "wireguard-go-rs",
     "windows-installer",
+    "installer-downloader",
 ]
 # The default members may exclude packages that cannot be built for all targets, or that do not always
 # need to be built
@@ -83,6 +84,7 @@ default-members = [
     "talpid-wireguard",
     "tunnel-obfuscation",
     "wireguard-go-rs",
+    "installer-downloader",
 ]
 
 # Keep all lints in sync with `test/Cargo.toml`
