@@ -2478,6 +2478,7 @@ name = "installer-downloader"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "async-trait",
  "cacao",
  "image 0.25.5",
  "libui",
@@ -2486,6 +2487,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "tokio",
  "windows-sys 0.52.0",
  "windows-sys 0.59.0",
  "winres",
