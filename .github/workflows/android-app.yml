@@ -61,6 +61,7 @@ permissions: {}
 
 env:
   E2E_TEST_INFRA_FLAVOR: ${{ github.event.inputs.e2e_tests_infra_flavor || 'stagemole' }}
+  E2E_TEST_REPEAT: ${{ env.E2E_TEST_REPEAT || '0' }}
 
 jobs:
   prepare:
@@ -297,7 +298,7 @@ jobs:
       - name: Build stagemole app
         uses: burrunan/gradle-cache-action@v1
         if: >
-          (github.event.inputs.e2e_test_repeat != '0' && env.E2E_TEST_INFRA_FLAVOR == 'stagemole') ||
+          (env.E2E_TEST_REPEAT != '0' && env.E2E_TEST_INFRA_FLAVOR == 'stagemole') ||
           github.event.inputs.run_firebase_tests == 'true'
         with:
           job-id: jdk17
@@ -453,12 +454,12 @@ jobs:
     runs-on: [self-hosted, android-device, android-emulator]
     if: >
       github.event_name == 'schedule' ||
-      (github.event.inputs.e2e_test_repeat != '0' && github.event_name != 'pull_request')
+      (env.E2E_TEST_REPEAT != '0' && github.event_name != 'pull_request')
     needs: [build-app, build-instrumented-tests]
     strategy:
       matrix:
         include:
-          - test-repeat: ${{ github.event.inputs.e2e_test_repeat || 1 }}
+          - test-repeat: ${{ env.E2E_TEST_REPEAT || 1 }}
     steps:
       - name: Prepare report dir
         if: ${{ matrix.test-repeat != 0 }}
