@@ -82,7 +82,7 @@ jobs:
         if: ${{ github.event.inputs.override_container_image == '' }}
         run: |
           echo "INNER_E2E_TEST_INFRA_FLAVOR=${{ github.event.inputs.e2e_tests_infra_flavor || 'stagemole' }}" >> $GITHUB_OUTPUT
-          echo "INNER_E2E_TEST_REPEAT=${{ github.event.inputs.e2e_test_repeat || '0' }}" >> $GITHUB_OUTPUT
+          echo "INNER_E2E_TEST_REPEAT=${{ github.event.inputs.e2e_test_repeat || '1' }}" >> $GITHUB_OUTPUT
     outputs:
       container_image: ${{ env.inner_container_image }}
       E2E_TEST_INFRA_FLAVOR: ${{ env.INNER_E2E_TEST_INFRA_FLAVOR }}
