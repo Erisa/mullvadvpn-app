@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 import { Colors, Spacings } from '../../foundations';
 import { TransientProps } from '../../types';
 import { Flex } from '../flex';
