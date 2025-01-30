@@ -51,7 +51,7 @@ jobs:
           git submodule update --init --recursive --depth=1 wireguard-go-rs
 
       - name: Install nightly Rust toolchain
-        run: rustup default $RUST_NIGHTLY_TOOLCHAIN
+        run: rustup override $RUST_NIGHTLY_TOOLCHAIN
 
       - uses: taiki-e/install-action@v2
         with:
