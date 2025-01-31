@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -eu
+
+product_version=$1
+repo="git@github.com:mullvad/mullvadvpn-app"
+artifact_dir=$(mktemp -d)
+repo_dir=$(mktemp -d)
+changelog_path="$repo_dir/CHANGELOG.md"
+
+# TODO: replace with existing make-release.sh script
+  echo "test" > "$artifact_dir/MullvadVPN-$product_version.pkg"
+  echo "test" > "$artifact_dir/MullvadVPN-$product_version.pkg.asc"
+  echo "test" > "$artifact_dir/MullvadVPN-$product_version.exe"
+  echo "test" > "$artifact_dir/MullvadVPN-$product_version.exe.asc"
+
+git clone --depth 1 --branch "$product_version" $repo "$repo_dir" 2> /dev/null > /dev/null
+(cd "$repo_dir" && git verify-tag "$product_version")
+echo ""
+
+changelog_end_version_pattern="20[0-9]\{2\}\.[0-9]\{1,2\}"
+if [[ $product_version == *-beta* ]]; then
+  changelog_end_version_pattern=".*"
+fi
+
+changelog_extract=$(sed -n "/^## \[$product_version\]/,/^## \[$changelog_end_version_pattern\]/p" "$changelog_path")
+previous_release=$(echo "$changelog_extract" | tail -1 | grep -oP '## \[\K[^\]]+')
+
+changelog=$(echo "$changelog_extract" | sed '$d' | \
+  awk 'NF { last = last ? last ORS $0 : $0 } END { print last }')
+
+release_flags=( --draft --verify-tag --notes-file - --title "$product_version" )
+
+body="This release is for desktop only."
+if [[ $product_version == *-beta* ]]; then
+  body+="\n\nHere is a list of all changes since last release [$previous_release](https://github.com/mullvad/mullvadvpn-app/releases/tag/$previous_release):"
+  release_flags+=(--prerelease)
+else
+  body+="\n\nHere is a list of all changes since last stable release [$previous_release](https://github.com/mullvad/mullvadvpn-app/releases/tag/$previous_release):"
+  release_flags+=(--latest)
+fi
+
+version_count=$(echo "$changelog" | grep -c "^## ")
+if [ "$version_count" -eq 1 ]; then
+  changelog=$(echo "$changelog" | tail -n +2)
+fi
+
+body+="\n$changelog"
+
+# shellcheck disable=SC2059
+# shellcheck disable=SC2046
+printf "$body" | gh release create "${release_flags[@]}" "$product_version" $(printf "%s " "$artifact_dir"/*)
