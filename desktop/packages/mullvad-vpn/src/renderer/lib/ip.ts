@@ -265,6 +265,7 @@ function isNumberOfBits(value: number, bits: number): boolean {
 
 // IPv4 addresses reserved for local networks
 const IPV4_LAN_SUBNETS = [
+  new IPv4Range([100, 64, 0, 0], 10),
   new IPv4Range([10, 0, 0, 0], 8),
   new IPv4Range([172, 16, 0, 0], 12),
   new IPv4Range([192, 168, 0, 0], 16),
